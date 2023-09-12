@@ -23,9 +23,14 @@ public class LoanController {
         return loanService.addLoan(balance, cin, interest_rate, maturity_date, pin);
     }
 
-    @GetMapping("showLoan/{cin}")
-    public List<Loan> showLoan(@PathVariable Long cin) {
-        return loanService.showLoan(cin);
+    @GetMapping("showLoanByCin/{cin}")
+    public List<Loan> showLoans(@PathVariable Long cin) {
+        return loanService.showLoans(cin);
+    }
+
+    @GetMapping("showLoanById/{account_id}")
+    public Loan showLoan(@PathVariable Long account_id) {
+        return loanService.showLoan(account_id);
     }
 
     @GetMapping("closeLoan/{account_id}")

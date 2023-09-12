@@ -5,6 +5,8 @@ import com.loansystem.loansystem.model.Status;
 import com.loansystem.loansystem.repository.LoanRepository;
 import com.loansystem.loansystem.repository.StatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,12 +18,18 @@ import java.util.List;
 import java.util.Stack;
 
 @Service
+@ConfigurationProperties(prefix = "endpoint")
 public class LoanService {
 
     private LoanRepository loanRepository;
     private StatusRepository statusRepository;
 
     private final RestTemplate restTemplate;
+
+    @Value("${endpoint.close_product_url}")
+    private String close_product_url;
+    @Value("${endpoint.add_product_url}")
+    private String add_product_url;
 
     @Autowired
     public LoanService(LoanRepository loanRepository, StatusRepository statusRepository, RestTemplate restTemplate) {
@@ -40,7 +48,7 @@ public class LoanService {
         Long account_id = newLoan.getAccount_id();
 
 //      save ke customer system
-        String apiUrl = "http://localhost:8082/product/addProduct";
+        String apiUrl = add_product_url;
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiUrl)
                 .queryParam("cin", cin)
@@ -58,8 +66,12 @@ public class LoanService {
         }
     }
 
-    public List<Loan> showLoan(Long cin) {
+    public List<Loan> showLoans(Long cin) {
         return loanRepository.findByCin(cin);
+    }
+
+    public Loan showLoan(Long account_id) {
+        return loanRepository.findById(account_id).orElse(null);
     }
 
     public Loan closeLoan(Long account_id) {
@@ -72,7 +84,7 @@ public class LoanService {
         loanRepository.save(loan);
 
 //        save ke customer system
-        String apiUrl = "http://localhost:8082/product/closeProduct";
+        String apiUrl = close_product_url;
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiUrl)
                 .queryParam("account_id", account_id)
