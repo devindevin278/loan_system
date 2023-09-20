@@ -102,5 +102,15 @@ public class TransactionService {
         return transactionRepository.save(transaction);
     }
 
+    public Transaction interestAccrual(Long loan_id, Double nominal) {
+
+        Loan loan = loanRepository.findById(loan_id).orElse(null);
+        TransactionType transactionType = transactionTypeRepository.findById((long)1).orElse(null);
+        Transaction transaction = new Transaction(nominal, null, loan, transactionType);
+
+        return transactionRepository.save(transaction);
+
+    }
+
 
 }

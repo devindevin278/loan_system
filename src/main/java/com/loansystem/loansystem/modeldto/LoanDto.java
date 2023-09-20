@@ -1,57 +1,33 @@
-package com.loansystem.loansystem.model;
+package com.loansystem.loansystem.modeldto;
 
-import jakarta.persistence.*;
+import com.loansystem.loansystem.model.Status;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 import java.util.Date;
-import java.util.List;
 
-@Entity
-@Table
-public class Loan {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class LoanDto {
     private Long account_id;
-
     private Long cin;
-    private Integer pin;
     private Double interestRate;
     private Double balance;
     private Double interestAmount;
-
-    @Temporal(TemporalType.TIMESTAMP)
     private Date issueDate;
-    @PrePersist
-    protected void onCreate() {
-        issueDate = new Date();
-    }
     private Date maturityDate;
+    private String status;
 
-    @OneToMany(mappedBy = "loan", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
-    private List<Transaction> transactions;
-
-    @ManyToOne
-    @JoinColumn(name = "status_id")
-    private Status status;
-
-
-    public Loan() {
+    public LoanDto() {
     }
 
-    public Loan(Long cin, Integer pin, Double interestRate, Double balance, Double interestAmount, Date issueDate, Date maturityDate, Status status) {
+    public LoanDto(Long account_id, Long cin, Double interestRate, Double balance, Double interestAmount, Date issueDate, Date maturityDate, String status) {
+        this.account_id = account_id;
         this.cin = cin;
-        this.pin = pin;
         this.interestRate = interestRate;
         this.balance = balance;
         this.interestAmount = interestAmount;
         this.issueDate = issueDate;
         this.maturityDate = maturityDate;
-        this.status = status;
-    }
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -69,14 +45,6 @@ public class Loan {
 
     public void setCin(Long cin) {
         this.cin = cin;
-    }
-
-    public Integer getPin() {
-        return pin;
-    }
-
-    public void setPin(Integer pin) {
-        this.pin = pin;
     }
 
     public Double getInterestRate() {
@@ -119,16 +87,11 @@ public class Loan {
         this.maturityDate = maturityDate;
     }
 
-    @Override
-    public String toString() {
-        return "Loan{" +
-                "account_id=" + account_id +
-                ", cin=" + cin +
-                ", interestRate=" + interestRate +
-                ", balance=" + balance +
-                ", interestAmount=" + interestAmount +
-                ", issueDate=" + issueDate +
-                ", maturityDate=" + maturityDate +
-                '}';
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
